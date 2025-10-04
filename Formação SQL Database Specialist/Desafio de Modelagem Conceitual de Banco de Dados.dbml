@@ -1,0 +1,65 @@
+Table Cliente {
+  id_cliente int [pk]
+  nome varchar(100)
+  cpf_cnpj varchar(20)
+  endereco varchar(100)
+  tipo_pagamento varchar(45)
+}
+
+Table Produto {
+  id_produto int [pk]
+  nome varchar(100)
+  descricao text
+  preco decimal(10,2)
+  id_fornecedor int [ref: > Fornecedor.id_fornecedor]
+  id_vendedor int [ref: > Vendedor.id_vendedor, null]
+}
+
+Table Fornecedor {
+  id_fornecedor int [pk]
+  razao_social varchar(100)
+  cnpj varchar(20)
+}
+
+Table Pedido {
+  id_pedido int [pk]
+  id_cliente int [ref: > Cliente.id_cliente]
+  data_pedido datetime
+  status_pedido varchar(50) [ref: > Status_pedidos.status_pedido]
+  endereco_entrega varchar(100)
+  valor_frete decimal(10,2)
+  cancelado boolean
+}
+
+Table Status_pedidos {
+  status_pedido varchar(50) [pk]
+}
+
+Table ItemPedido {
+  id_item_pedido int [pk]
+  id_pedido int [ref: > Pedido.id_pedido]
+  id_produto int [ref: > Produto.id_produto]
+  quantidade int
+  preco_unitario decimal(10,2)
+}
+
+Table Estoque {
+  id_estoque int [pk]
+  id_produto int [ref: > Produto.id_produto]
+  quantidade_disponivel int
+  localizacao varchar(100) [null]
+}
+
+Table Vendedor {
+  id_vendedor int [pk]
+  nome_fantasia varchar(100)
+  cnpj varchar(20)
+}
+
+Table Devolucao {
+  id_devolucao int [pk]
+  id_pedido int [ref: > Pedido.id_pedido, null, unique]
+  data_devolucao date
+  motivo text
+  status_devolucao varchar(50)
+}
