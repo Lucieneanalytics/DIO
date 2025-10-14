@@ -1,0 +1,91 @@
+// ENUMS
+Enum tipo_cambio {
+  manual
+  automatico
+}
+
+Enum tipo_direcao {
+  hidraulica
+  eletrica
+  manual
+}
+
+Enum tipo_combustivel {
+  gasolina
+  alcool
+  diesel
+  eletrico
+  flex
+}
+
+// TABELAS PRINCIPAIS
+
+Table Carros {
+  placa_carro    varchar [pk, unique]
+  modelo_carro   varchar
+  km             int
+  cambio         tipo_cambio
+  tipo_direcao   tipo_direcao
+  fabricante     varchar
+  motor          varchar
+  combustivel    tipo_combustivel
+}
+
+Table Clientes {
+  cod_cliente     int [pk]
+  nome            varchar
+  telefone        varchar
+  email           varchar
+}
+
+Table Mecanicos {
+  cod_mecanico    int [pk]
+  nome_mecanico   varchar
+}
+
+Table Ordem_de_Servico {
+  cod_ordem       int [pk]
+  cod_cliente     int [ref: > Clientes.cod_cliente]
+  cod_mecanico    int [ref: > Mecanicos.cod_mecanico]
+  placa_carro     varchar [ref: > Carros.placa_carro]
+  tipo_pagamento  varchar
+  data_entrada    date
+  data_saida      date
+  valor_total     decimal(10,2)
+}
+
+Table Diagnostico {
+  cod_diagnostico        int [pk]
+  cod_ordem              int [ref: > Ordem_de_Servico.cod_ordem]
+  descricao_diagnostico  text
+}
+
+Table Pecas {
+  cod_peca       int [pk]
+  nome_peca      varchar
+  descricao_peca text
+  valor_peca     decimal(10,2)
+}
+
+// TABELA DE RELAÇÃO ENTRE ORDEM E PEÇAS (N:N)
+Table Ordem_Peca {
+  cod_ordem     int [ref: > Ordem_de_Servico.cod_ordem, pk]
+  cod_peca      int [ref: > Pecas.cod_peca, pk]
+  quantidade    int
+  valor_unitario decimal(10,2)
+}
+
+// SERVIÇOS
+
+Table Servicos {
+  cod_servico        int [pk]
+  cod_ordem          int [ref: > Ordem_de_Servico.cod_ordem]
+  descricao_servico  text
+  valor_servico      decimal(10,2)
+}
+
+// RELAÇÃO ENTRE SERVIÇOS E MECÂNICOS (N:N)
+Table ExecucaoServico {
+  cod_mecanico  int [ref: > Mecanicos.cod_mecanico, pk]
+  cod_servico   int [ref: > Servicos.cod_servico, pk]
+}
